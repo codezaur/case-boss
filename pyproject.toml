@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "case-boss"
+version = "0.1.0"
+description = "Library converting JSON or Python dict keys to selected format"
+readme = "README.md"
+authors = [{name = "codezaur", email = "codezaur@gmail.com"}]
+license = {file = "LICENSE"}
+requires-python = ">=3.6"
+dependencies = []
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]

@@ -1,0 +1,8 @@
+# Development dependencies for case-boss
+# Formatters, linters, type checkers, test frameworks
+black       # code formatter
+isort       # import sorter
+flake8      # linter
+mypy        # type checker
+pytest      # test framework
+pre-commit  # git hook manager

@@ -1,0 +1,2 @@
+# Runtime dependencies for case-boss
+# Pin versions for reproducibility
