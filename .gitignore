@@ -1,0 +1,30 @@
+
+# Build directories
+dist/
+build/
+__pycache__/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+.iml
+*.iml
+
+# Wheels and source distributions
+*.whl
+*.tar.gz
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# virtualenv
+venv/
+ENV/
+env/
+.venv/
+env.bak/
+venv.bak/
