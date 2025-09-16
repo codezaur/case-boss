@@ -7,3 +7,4 @@ class CaseType(Enum):
     PASCAL = "pascal"  # eg. YouShallNotPass
     KEBAB = "kebab"  # eg. you-shall-not-pass
     SPACE = "space"  # eg. you shall not pass
+    START = "start"  # eg. You Shall Not Pass
