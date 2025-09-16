@@ -1,8 +1,10 @@
 import re
-from core.converters.case_converter import CaseConverter
+
+from core.abstract.case_converter import CaseConverter
 
 
 class KebabCaseConverter(CaseConverter):
+    """Converts to KebabCase, eg: 'example-dict-key' """
 
     @staticmethod
     def _convert_key(key: str) -> str:

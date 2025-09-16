@@ -1,11 +1,18 @@
-from core.converters.kebab_converter import KebabCaseConverter
+from core.converters import (
+    CamelCaseConverter,
+    KebabCaseConverter,
+    PascalCaseConverter,
+    SnakeCaseConverter,
+    SpaceCaseConverter,
+    StartCaseConverter,
+)
 from core.types import CaseType
 
-
 CASE_TYPE_CONVERTER_MAPPING = {
-    CaseType.SNAKE.value: KebabCaseConverter,  # replace later
-    CaseType.CAMEL.value: KebabCaseConverter,  # replace later
-    CaseType.PASCAL.value: KebabCaseConverter,  # replace later
+    CaseType.SNAKE.value: SnakeCaseConverter,
+    CaseType.CAMEL.value: CamelCaseConverter,
+    CaseType.PASCAL.value: PascalCaseConverter,
     CaseType.KEBAB.value: KebabCaseConverter,
-    CaseType.SPACE.value: KebabCaseConverter,  # replace later
+    CaseType.SPACE.value: SpaceCaseConverter,
+    CaseType.START.value: StartCaseConverter,
 }

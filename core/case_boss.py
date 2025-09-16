@@ -2,7 +2,7 @@ import copy
 from typing import Any, Dict, Hashable
 
 from core.const import CASE_TYPE_CONVERTER_MAPPING
-from core.converters.case_converter import CaseConverter
+from core.abstract.case_converter import CaseConverter
 from core.decorators import validate_is_dict
 from core.types import CaseType
 
@@ -41,12 +41,13 @@ class CaseBoss:
 
         converter: CaseConverter = CASE_TYPE_CONVERTER_MAPPING.get(type, None)
         if not converter:
-            raise ValueError(f"Unknown case type: {type}, allowed types: {[t.value for t in CaseType]}")
+            raise ValueError(
+                f"Unknown case type: {type}, allowed types: {[t.value for t in CaseType]}"
+            )
 
         converter.convert(source=source, ignore_malformed=ignore_malformed)
 
         return source
-
 
     def transform_from_json(self, source: str, type: CaseType) -> str:
         """
