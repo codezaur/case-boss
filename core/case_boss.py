@@ -1,4 +1,5 @@
 import copy
+import json
 from typing import Any, Dict, Hashable
 
 from core.const import CASE_TYPE_CONVERTER_MAPPING
@@ -64,13 +65,14 @@ class CaseBoss:
             ValueError: If the input is not valid JSON or contains invalid data.
             json.JSONDecodeError: If the input string is not valid JSON.
         """
-        # try:
-        #     config = json.loads(source)
-        # except json.JSONDecodeError as e:
-        #     raise json.JSONDecodeError(
-        #         f"Invalid JSON provided to transform_from_json: {e.msg}",
-        #         e.doc,
-        #         e.pos,
-        #     ) from e
-        # return self.transform(config)
-        return source
+
+        try:
+            data = json.loads(source)
+        except json.JSONDecodeError as e:
+            raise json.JSONDecodeError(
+                f"Invalid JSON provided to transform_from_json: {e.msg}",
+                e.doc,
+                e.pos,
+            ) from e
+
+        return  json.dumps(self.transform(source=data, type=type))
