@@ -3,20 +3,20 @@ import json
 from typing import Any, Dict, Hashable
 
 from core.const import CASE_TYPE_CONVERTER_MAPPING
+from core.errors import ERROR_UNKNOWN_CASE_TYPE, ERROR_INVALID_JSON
 from core.abstract.case_converter import CaseConverter
-from core.decorators import validate_is_dict
 from core.types import CaseType
+from core.utils import normalize_type, validate_is_dict
 
 
 class CaseBoss:
 
-    @validate_is_dict
+
     def transform(
         self,
         source: Dict[Hashable, Any],
-        type: CaseType,
+        case: CaseType,
         clone: bool = False,
-        ignore_malformed: bool = False,
     ) -> Dict[Hashable, Any]:
         """
         Transforms input dict keys to specified case type.
@@ -26,7 +26,6 @@ class CaseBoss:
             source (dict): The data to process.
             type (CaseType): Target key case format (e.g., CaseType.SNAKE, CaseType.CAMEL)
             clone (bool): Will return clone, leaving original object untouched (defaults to False)
-            ignore_malformed (bool): Will ignore malformed data and proceed to next item without
             throwing exception (defaults to False)
 
         Returns:
@@ -37,20 +36,22 @@ class CaseBoss:
             ValueError: If data is invalid.
         """
 
+        validate_is_dict(source=source)
+        case = normalize_type(case=case)
+
         if clone:
             source = copy.deepcopy(source)
 
-        converter: CaseConverter = CASE_TYPE_CONVERTER_MAPPING.get(type, None)
+        converter: CaseConverter = CASE_TYPE_CONVERTER_MAPPING.get(case.value, None)
         if not converter:
-            raise ValueError(
-                f"Unknown case type: {type}, allowed types: {[t.value for t in CaseType]}"
-            )
+            raise ValueError(ERROR_UNKNOWN_CASE_TYPE.format(type_=type(case).__name__, allowed=[t.value for t in CaseType]))
 
-        converter.convert(source=source, ignore_malformed=ignore_malformed)
+        converter.convert(source=source)
 
         return source
 
-    def transform_from_json(self, source: str, type: CaseType) -> str:
+
+    def transform_from_json(self, source: str, case: CaseType) -> str:
         """
         Transforms input JSON keys to specified case-type, and returns the result as a JSON string.
 
@@ -66,13 +67,11 @@ class CaseBoss:
             json.JSONDecodeError: If the input string is not valid JSON.
         """
 
+        case = normalize_type(case=case)
+
         try:
             data = json.loads(source)
         except json.JSONDecodeError as e:
-            raise json.JSONDecodeError(
-                f"Invalid JSON provided to transform_from_json: {e.msg}",
-                e.doc,
-                e.pos,
-            ) from e
+            raise json.JSONDecodeError(ERROR_INVALID_JSON.format(msg=e.msg), e.doc, e.pos) from e
 
-        return  json.dumps(self.transform(source=data, type=type))
+        return  json.dumps(self.transform(source=data, case=case))

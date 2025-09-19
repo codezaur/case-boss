@@ -1,3 +1,10 @@
+
+[project.scripts]
+case-boss = "cli.cli:app"
+
+[tool.setuptools.packages.find]
+where = ["."]
+
 [build-system]
 requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
@@ -5,12 +12,12 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "case-boss"
 version = "0.1.0"
-description = "Library converting JSON or Python dict keys to selected format"
+description = "Library converting Python dict or JSON keys to selected format"
 readme = "README.md"
 authors = [{name = "codezaur", email = "codezaur@gmail.com"}]
 license = {file = "LICENSE"}
 requires-python = ">=3.6"
-dependencies = []
+dependencies = ["typer"]
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",

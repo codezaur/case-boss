@@ -16,3 +16,12 @@ CASE_TYPE_CONVERTER_MAPPING = {
     CaseType.SPACE.value: SpaceCaseConverter,
     CaseType.START.value: StartCaseConverter,
 }
+
+CASE_DESCRIPTIONS = {
+    CaseType.CAMEL.value: "camel case (eg. 'youShallNotPass')",
+    CaseType.KEBAB.value: "kebab case (eg. 'you-shall-not-pass')",
+    CaseType.PASCAL.value: "pascal case (eg. 'YouShallNotPass')",
+    CaseType.SNAKE.value: "snake case (eg. 'you_shall_not_pass')",
+    CaseType.SPACE.value: "space case (eg. 'you shall not pass')",
+    CaseType.START.value: "start case (eg. 'You Shall Not Pass')",
+}

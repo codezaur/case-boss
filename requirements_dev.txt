@@ -6,3 +6,4 @@ flake8      # linter
 mypy        # type checker
 pytest      # test framework
 pre-commit  # git hook manager
+build>=1.2,<2
