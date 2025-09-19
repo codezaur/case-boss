@@ -39,5 +39,5 @@ def test_multiple_formats():
 
 def test_value_none():
     data = {"normalItem": 1, "noneItem": None}
-    PascalCaseConverter.convert(source=data, ignore_malformed=True)
+    PascalCaseConverter.convert(source=data)
     assert data == {"NormalItem": 1, "NoneItem": None}

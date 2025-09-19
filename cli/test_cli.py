@@ -1,0 +1,115 @@
+import io
+import json
+import sys
+from cli.const import ERROR_NO_INPUT, ERROR_OUTPUT_INPLACE, WARN_FILE_NOT_JSON
+import pytest
+from typer.testing import CliRunner
+
+from .cli import app
+
+runner = CliRunner()
+
+def test_transform_with_json_input():
+    input_json = '{"simpleKey": 1, "another_key": 2}'
+    result = runner.invoke(app, ["transform", "--json", input_json])
+    assert result.exit_code == 0
+    assert '"simple_key": 1' in result.output
+
+def test_transform_with_json_and_to_option():
+    input_json = '{"simpleKey": 1, "another_key": 2}'
+    result = runner.invoke(app, ["transform", "--json", input_json, "--to", "kebab"])
+    assert result.exit_code == 0
+    assert '"simple-key": 1' in result.output
+
+def test_transform_with_json_and_output_file(tmp_path):
+    input_json = '{"simpleKey": 1, "another_key": 2}'
+    out_file = tmp_path / "out.json"
+    result = runner.invoke(app, ["transform", "--json", input_json, "--output", str(out_file)])
+    assert result.exit_code == 0
+    assert f"Info: created new file '{out_file}'" in result.output
+    with open(out_file) as f:
+        data = f.read()
+    assert '"simple_key": 1' in data
+
+def test_transform_with_file_input(tmp_path):
+    in_file = tmp_path / "in.json"
+    in_file.write_text('{"simple_key": 1, "another_key": 2}')
+    result = runner.invoke(app, ["transform", str(in_file), "--to", "camel", "--inplace"])
+    assert result.exit_code == 0
+    assert f"Info: modified file: '{in_file}' in place" in result.output
+    with open(in_file) as f:
+        data = f.read()
+    assert '"simpleKey": 1' in data
+
+def test_transform_with_file_input_stdout(tmp_path):
+    in_file = tmp_path / "in.json"
+    in_file.write_text('{"simple_key": 1, "another_key": 2}')
+    result = runner.invoke(app, ["transform", str(in_file), "--to", "camel"])
+    assert result.exit_code == 0
+    # Should output to stdout, not modify file
+    assert '"simpleKey": 1' in result.output
+    # Input file should remain unchanged
+    with open(in_file) as f:
+        data = f.read()
+    assert '"simple_key": 1' in data
+
+def test_transform_with_file_input_inplace(tmp_path):
+    in_file = tmp_path / "in.json"
+    in_file.write_text('{"simple_key": 1, "another_key": 2}')
+    result = runner.invoke(app, ["transform", str(in_file), "--to", "camel", "--inplace"])
+    assert result.exit_code == 0
+    assert f"Info: modified file: '{in_file}' in place" in result.output
+    # Input file should be changed
+    with open(in_file) as f:
+        data = f.read()
+    assert '"simpleKey": 1' in data
+
+def test_transform_with_file_input_txt(tmp_path):
+    in_file = tmp_path / "in.txt"
+    in_file.write_text('{"simple_key": 1, "another_key": 2}')
+    result = runner.invoke(app, ["transform", str(in_file), "--to", "camel"])
+    assert WARN_FILE_NOT_JSON in result.output
+    assert result.exit_code == 0
+    assert '"simpleKey": 1' in result.output
+
+def test_transform_with_benchmark():
+    input_json = '{"simpleKey": 1, "another_key": 2}'
+    result = runner.invoke(app, ["transform", "--json", input_json, "--benchmark"])
+    assert result.exit_code == 0
+    assert "Info: transformation completed in" in result.output
+
+def test_transform_with_stdin():
+    input_json = '{"simpleKey": 1, "another_key": 2}'
+    result = runner.invoke(app, ["transform", "-"], input=input_json)
+    assert result.exit_code == 0
+    assert '"simple_key": 1' in result.output
+
+def test_transform_path_json_error():
+    input_json = '{"simpleKey": 1}'
+    result = runner.invoke(app, ["transform", "file.json", "--json", input_json])
+    assert result.exit_code == 1
+    assert "Cannot use both" in result.output or "mutually exclusive" in result.output
+
+def test_transform_output_inplace_error(tmp_path):
+    in_file = tmp_path / "in.json"
+    in_file.write_text('{"simple_key": 1, "another_key": 2}')
+    result = runner.invoke(app, ["transform", str(in_file), "--output", "result.json", "--inplace"])
+    assert result.exit_code == 1
+    assert ERROR_OUTPUT_INPLACE.strip() == result.output.strip()
+
+def test_transform_missing_input_error():
+    result = runner.invoke(app, ["transform"])
+    assert result.exit_code == 1
+    assert ERROR_NO_INPUT.strip() == result.output.strip()
+
+def test_transform_invalid_json():
+    input_json = '{"simpleKey": 1, invalid}'
+    result = runner.invoke(app, ["transform", "--json", input_json])
+    assert result.exit_code == 1
+    assert "Invalid JSON" in result.output or "Expecting property name" in result.output
+
+def test_transform_invalid_case_type():
+    input_json = '{"simpleKey": 1}'
+    result = runner.invoke(app, ["transform", "--json", input_json, "--to", "not_a_type"])
+    assert result.exit_code == 2
+    assert "Invalid value for '--to'" in result.output

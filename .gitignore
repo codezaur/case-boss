@@ -15,6 +15,10 @@ __pycache__/
 # Wheels and source distributions
 *.whl
 *.tar.gz
+build/
+dist/
+*.egg-info/
+*.egg
 
 # mypy
 .mypy_cache/
