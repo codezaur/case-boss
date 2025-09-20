@@ -13,9 +13,9 @@ class CamelCaseConverter(CaseConverter):
 
         for i, word in enumerate(words):
             preserve = False
-            if self.preservables:
+            if self._preserve_tokens:
                 acronym = word.upper()
-                preserve = acronym in self.preservables 
+                preserve = acronym in self._preserve_tokens 
             word = word.capitalize() if i > 0 else word.lower()
             w = acronym if preserve else word
             words_result += w

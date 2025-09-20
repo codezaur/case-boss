@@ -16,7 +16,7 @@ description = "Library converting Python dict or JSON keys to selected format"
 readme = "README.md"
 authors = [{name = "codezaur", email = "codezaur@gmail.com"}]
 license = {file = "LICENSE"}
-requires-python = ">=3.6"
+requires-python = ">=3.8"
 dependencies = ["typer"]
 classifiers = [
     "Programming Language :: Python :: 3",

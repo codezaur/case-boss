@@ -6,8 +6,14 @@ HELP_TO = "Target case type"
 HELP_OUTPUT = "Write output to a file (expects a filename)."
 HELP_INPLACE = "Modify the input file in place, instead of creating new one (cannot be used with --output or stdin)."
 HELP_BENCHMARK = "Report transformation time in seconds"
-HELP_PRESERVABLES = "List of preservable strings, (eg. acronyms like HTTP, ID) " \
-"to not be modified during conversion, comma separated"
+HELP_PRESERVE = (
+    "Comma-separated list of tokens (e.g., 'ID,SQL,URL') whose original casing should be preserved "
+    "within converted values. For example, preserving 'SQL' in SQLAlchemy will return 'SQL_alchemy', "
+    "leaving 'SQL' unchanged."
+)
+HELP_EXCLUDE = "Comma-separated list of keys to skip entirely (stopping recursion)."
+HELP_LIMIT = ("Set the maximum recursion depth for nested JSON key transformation. "
+    "For example, setting to 1 will only transform top level keys. Defaults to 0 (unlimited).")
 HELP_VERSION = "Show version and exit"
 
 ERROR_MUTUALLY_EXCLUSIVE = "Error: Cannot use both --json and source argument."

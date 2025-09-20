@@ -12,9 +12,9 @@ class StartCaseConverter(CaseConverter):
         words_result: list[str] = []
         for word in words:
             preserve = False
-            if self.preservables:
+            if self._preserve_tokens:
                 acronym = word.upper()
-                preserve = acronym in self.preservables 
+                preserve = acronym in self._preserve_tokens 
             w = acronym if preserve else word.capitalize()
             words_result.append(w)
         return " ".join(words_result)
