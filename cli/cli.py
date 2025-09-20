@@ -2,7 +2,7 @@ import sys
 import typer
 import time
 import json
-from cli.const import ERROR_FILE_NOT_FOUND, ERROR_INVALID_JSON, ERROR_MUTUALLY_EXCLUSIVE, ERROR_NO_INPUT, ERROR_OUTPUT_INPLACE, ERROR_VALUE, HELP_APP, HELP_BENCHMARK, HELP_INPLACE, HELP_JSON, HELP_OUTPUT, HELP_SOURCE, HELP_TO, HELP_VERSION, INFO_BENCHMARK, INFO_NEW_FILE, INFO_UPDATED_INPLACE, WARN_FILE_NOT_JSON
+from cli.const import ERROR_FILE_NOT_FOUND, ERROR_INVALID_JSON, ERROR_MUTUALLY_EXCLUSIVE, ERROR_NO_INPUT, ERROR_OUTPUT_INPLACE, ERROR_VALUE, HELP_APP, HELP_BENCHMARK, HELP_INPLACE, HELP_JSON, HELP_OUTPUT, HELP_PRESERVABLES, HELP_SOURCE, HELP_TO, HELP_VERSION, INFO_BENCHMARK, INFO_NEW_FILE, INFO_UPDATED_INPLACE, WARN_FILE_NOT_JSON
 from core.case_boss import CaseBoss
 from core.const import CASE_DESCRIPTIONS
 from core.types import CaseType
@@ -22,7 +22,8 @@ def _validate_args(
     source: str | None, 
     json_input: str = "",
     output: str = "",
-    inplace: bool = False
+    inplace: bool = False,
+
     ) -> None:
   if source and source != "-" and not source.endswith(".json"):
     typer.echo(WARN_FILE_NOT_JSON, err=False)
@@ -76,18 +77,20 @@ def transform(
   case: CaseType = typer.Option('snake', "--to", help=HELP_TO),
   output: str = typer.Option(None, "--output", "-o", help=HELP_OUTPUT),
   inplace: bool = typer.Option(False, "--inplace", "-i", help=HELP_INPLACE),
-  benchmark: bool = typer.Option(False, "--benchmark", "-b", help=HELP_BENCHMARK)
+  benchmark: bool = typer.Option(False, "--benchmark", "-b", help=HELP_BENCHMARK),
+  preservables: str = typer.Option(None, "--preservables", help=HELP_PRESERVABLES)
 ) -> None:
   """Transform JSON object keys to the given case type."""
 
   _validate_args(source=source, json_input=input_json, output=output, inplace=inplace)
+  preservables_list = preservables.split(",") if preservables else []
   data = _get_input_json(source=source, json_input=input_json)
 
   boss = CaseBoss()
   
   try:
     start = time.perf_counter() if benchmark else None
-    result = boss.transform_from_json(source=data, case=case)
+    result = boss.transform_from_json(source=data, case=case, preservables=preservables_list)
     elapsed = (time.perf_counter() - start) if benchmark else None
   except json.JSONDecodeError as er:
     typer.echo(ERROR_INVALID_JSON.format(msg=er.msg), err=True)

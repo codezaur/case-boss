@@ -1,3 +1,4 @@
+from typing import Literal
 from core.errors import ERROR_NOT_DICT, ERROR_UNKNOWN_CASE_TYPE, ERROR_WRONG_TYPE_CASE_TYPE
 from core.types import CaseType
 
@@ -31,3 +32,50 @@ def normalize_type(case: CaseType | str) -> CaseType:
         except ValueError:
             raise ValueError(ERROR_UNKNOWN_CASE_TYPE.format(type_=type(case), allowed=[t.value for t in CaseType]))
     raise TypeError(ERROR_WRONG_TYPE_CASE_TYPE.format(type_= type(case).__name__))
+
+
+def split_to_words(key: str) -> list[str]:
+    """
+    Splits a key into words, handling separators (_,-,space), camel/Pascal humps, and acronyms.
+    Returns words with their original casing preserved.
+    """
+    words: list[str] = []
+    current = ""
+    for char in key:
+        if char in "_- ":
+            if current:
+                words.append(current)
+            current = ""
+            continue
+        if not current:
+            current = char
+            continue
+        prev = current[-1]
+        if prev.islower() and char.isupper():
+            words.append(current)
+            current = char
+        elif prev.isupper() and char.islower() and len(current) > 1:
+            words.append(current[:-1])
+            current = current[-1] + char
+        else:
+            current += char
+    if current:
+        words.append(current)
+    return words
+
+def convert_key_with_separator(
+    key: str, 
+    preservables: set[str] = {},
+    separator: Literal["-", "_", " "] = "_"
+    ) -> str:
+
+    words = split_to_words(key=key)
+    words_result: list[str] = []
+    for word in words:
+        preserve = False
+        if preservables:
+            acronym = word.upper()
+            preserve = acronym in preservables 
+        w = acronym if preserve else word.lower()
+        words_result.append(w)
+    return separator.join(words_result)

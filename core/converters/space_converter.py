@@ -1,17 +1,10 @@
-import re
 from core.abstract.case_converter import CaseConverter
+from core.utils import convert_key_with_separator
 
 
 
 class SpaceCaseConverter(CaseConverter):
     """Converts to space case, eg: 'example dict key' """
 
-    @staticmethod
-    def _convert_key(key):
-        # Split camelCase and PascalCase boundaries
-        key = re.sub(r'([a-z0-9])([A-Z])', r'\1 \2', key)
-        # Replace underscores and hyphens with spaces
-        key = re.sub(r'[_\-]+', ' ', key)
-        # Collapse multiple spaces to a single space and strip
-        key = re.sub(r'\s+', ' ', key).strip()
-        return key.lower()
+    def _convert_key(self, key: str) -> str:
+        return convert_key_with_separator(key=key, preservables=self.preservables, separator=" ")

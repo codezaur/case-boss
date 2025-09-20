@@ -113,3 +113,15 @@ def test_transform_invalid_case_type():
     result = runner.invoke(app, ["transform", "--json", input_json, "--to", "not_a_type"])
     assert result.exit_code == 2
     assert "Invalid value for '--to'" in result.output
+
+def test_cli_preservables(tmp_path):
+    input_data = '{"SQLAlchemy": 1, "userID": 1, "default-http-router": 1, "Atomic_http_server": 1}'
+    input_file = tmp_path / "input.json"
+    input_file.write_text(input_data)
+
+    result = runner.invoke(app, ["transform", str(input_file), "--to", "kebab", "--preservables", "SQL,HTTP,ID"])
+    assert result.exit_code == 0
+    assert 'SQL-alchemy' in result.output
+    assert 'user-ID' in result.output
+    assert 'default-HTTP-router' in result.output
+    assert 'atomic-HTTP-server' in result.output

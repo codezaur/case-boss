@@ -1,15 +1,21 @@
 import re
 from core.abstract.case_converter import CaseConverter
+from core.utils import split_to_words
 
 
 
 class PascalCaseConverter(CaseConverter):
     """Converts to PascalCase, eg: 'ExampleDictKey' """
 
-    @staticmethod
-    def _convert_key(key: str) -> str:
-        # Split on underscores, hyphens, spaces, and camelCase boundaries
-        key = re.sub(r'([a-z0-9])([A-Z])', r'\1 \2', key)
-        key = re.sub(r'[_\- ]+', ' ', key)
-        words = key.split()
-        return ''.join(word.capitalize() for word in words)
+    def _convert_key(self, key: str) -> str:
+        words = split_to_words(key=key)
+        words_result = ""
+
+        for word in words:
+            preserve = False
+            if self.preservables:
+                acronym = word.upper()
+                preserve = acronym in self.preservables
+            w = acronym if preserve else word.capitalize()
+            words_result += w
+        return words_result

@@ -57,6 +57,13 @@ def test_ordered_dict(boss):
     result = boss.transform(source=data, case=CaseType.KEBAB)
     assert result == {"simple-key": 1, "another-key": 2}
 
+def test_preservables_acronyms_kebab(boss):
+    data = {"SQLAlchemy": 1, "HTTPRequest": 1, "userID": 1}
+    preservables = ["SQL", "HTTP", "ID"]
+    result = boss.transform(source=data, case=CaseType.KEBAB, preservables=preservables)
+    assert result == {"SQL-alchemy": 1, "HTTP-request": 1, "user-ID": 1}
+
+
 # JSON  
 
 def test_transform_from_json_valid(boss):
