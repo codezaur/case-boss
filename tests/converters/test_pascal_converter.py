@@ -46,15 +46,15 @@ def test_value_none(converter):
     converter.convert(source=data)
     assert data == {"NormalItem": 1, "NoneItem": None}
 
-def test_preservables_acronyms():
+def test_preserve_tokens():
     data = {
         "SQLAlchemy": 1,  
         "userID": 1,
         "default-http-router": 1, 
         "Atomic_http_server": 1
         }
-    preservables = ["SQL", "HTTP", "ID"]
-    converter = PascalCaseConverter(preservables=preservables)
+    preserve_tokens = ["SQL", "HTTP", "ID"]
+    converter = PascalCaseConverter(preserve_tokens=preserve_tokens)
     converter.convert(source=data)
     assert data == {
         "SQLAlchemy": 1, 

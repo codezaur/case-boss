@@ -52,15 +52,15 @@ def test_value_none(converter):
     converter.convert(source=data)
     assert data == {"normal-item": 1, "none-item": None}
 
-def test_preservables_acronyms():
+def test_preserve_tokens():
     data = {
         "SQLAlchemy": 1,  
         "userID": 1,
         "default-http-router": 1, 
         "Atomic_http_server": 1
         }
-    preservables = ["SQL", "HTTP", "ID"]
-    converter = KebabCaseConverter(preservables=preservables)
+    preserve_tokens = ["SQL", "HTTP", "ID"]
+    converter = KebabCaseConverter(preserve_tokens=preserve_tokens)
     converter.convert(source=data)
     assert data == {
         "SQL-alchemy": 1, 

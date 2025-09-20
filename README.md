@@ -55,10 +55,10 @@ case-boss transform path-to/file.json --benchmark
 case-boss transform path-to/file.json -b
 
 # preserving acronyms or custom words (e.g., keep 'ID' or 'HTTP' uppercase):
-case-boss transform path-to/file.json --preservables ID,HTTP
+case-boss transform path-to/file.json --preserve ID,HTTP
 
 # rich example; passing path, selected target case type, name of result file and benchamark
-case-boss transform path-to/file.json --to pascal --output result.json --benchmark --preservables ID,SQL
+case-boss transform path-to/file.json --to pascal --output result.json --benchmark --preserve ID,SQL
 
 
 case-boss transform --help  # show options and usage for the transform command
@@ -90,11 +90,11 @@ result = boss.transform(source=my_dict, case="camel", clone=True)
 print(result)
 
 # Preserving acronyms or custom words (e.g., keep 'ID' or 'HTTP' uppercase):
-result = boss.transform(source=my_dict, case="camel", preservables=["ID", "HTTP"])
+result = boss.transform(source=my_dict, case="camel", preserve_tokens=["ID", "HTTP"])
 print(result)
 
 # For JSON strings:
-json_result = boss.transform_from_json(source=my_json_str, case="camel", preservables=["ID", "HTTP"])
+json_result = boss.transform_from_json(source=my_json_str, case="camel", preserve_tokens=["ID", "HTTP"])
 print(json_result)
 ```
 
@@ -103,9 +103,9 @@ print(json_result)
 
 The `clone` argument (Python API only) determines whether the transformation mutates the original dictionary or returns a new, transformed copy. If `clone=True`, the original input is left unchanged and a new dict is returned. By default, `clone=False` and the input dict is modified in place.
 
-#### About `preservables`
+#### About `preserve_tokens`
 
-The `--preservables` CLI option and `preservables` Python argument allow you to specify a comma-separated list (CLI) or list of strings (Python) of words/acronyms to preserve in their original or uppercase form during case conversion. This is useful for things like `ID`, `HTTP`, etc., so they remain as intended (e.g., `userID` instead of `userId`).
+The `--preserve` CLI option and `preserve_tokens` Python argument allow you to specify a comma-separated list (CLI) or list of strings (Python) of words/acronyms to preserve in their original or uppercase form during case conversion. This is useful for things like `ID`, `HTTP`, etc., so they remain as intended (e.g., `userID` instead of `userId`).
 
 ## Supported Case Types
 

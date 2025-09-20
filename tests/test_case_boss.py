@@ -57,11 +57,37 @@ def test_ordered_dict(boss):
     result = boss.transform(source=data, case=CaseType.KEBAB)
     assert result == {"simple-key": 1, "another-key": 2}
 
-def test_preservables_acronyms_kebab(boss):
+def test_preserve_tokens_kebab(boss):
     data = {"SQLAlchemy": 1, "HTTPRequest": 1, "userID": 1}
-    preservables = ["SQL", "HTTP", "ID"]
-    result = boss.transform(source=data, case=CaseType.KEBAB, preservables=preservables)
+    preserve_tokens = ["SQL", "HTTP", "ID"]
+    result = boss.transform(source=data, case=CaseType.KEBAB, preserve_tokens=preserve_tokens)
     assert result == {"SQL-alchemy": 1, "HTTP-request": 1, "user-ID": 1}
+
+def test_skip_excluded_key(boss):
+    data = {"simpleKey": 1, "metaData": 1}
+    exclude_keys = ["metaData"]
+    result = boss.transform(source=data, case=CaseType.KEBAB, exclude_keys=exclude_keys)
+    assert result == {"simple-key": 1, "metaData": 1}
+
+def test_transform_nested_dict_with_recursion(boss):
+    data = {
+        "simpleKey": 1,
+        "metaData": {"nestedKey": 2, "anotherNested": 3}
+    }
+    result = boss.transform(source=data, case=CaseType.KEBAB)
+    # Nested keys should be converted
+    assert result == {"simple-key": 1, "meta-data": {"nested-key": 2, "another-nested": 3}}
+
+def test_transform_nested_dict_exclude_keys_stops_recursion(boss):
+    data = {
+        "simpleKey": 1,
+        "metaData": {"nestedKey": 2, "anotherNested": 3}
+    }
+    exclude_keys = ["metaData"]
+    result = boss.transform(source=data, case=CaseType.KEBAB, exclude_keys=exclude_keys)
+    # metaData should not be converted and should stop recursion 
+    assert result == {"simple-key": 1, "metaData": {"nestedKey": 2, "anotherNested": 3}}
+
 
 
 # JSON  

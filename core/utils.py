@@ -65,7 +65,7 @@ def split_to_words(key: str) -> list[str]:
 
 def convert_key_with_separator(
     key: str, 
-    preservables: set[str] = {},
+    preserve_tokens: set[str] = {},
     separator: Literal["-", "_", " "] = "_"
     ) -> str:
 
@@ -73,9 +73,9 @@ def convert_key_with_separator(
     words_result: list[str] = []
     for word in words:
         preserve = False
-        if preservables:
+        if preserve_tokens:
             acronym = word.upper()
-            preserve = acronym in preservables 
+            preserve = acronym in preserve_tokens 
         w = acronym if preserve else word.lower()
         words_result.append(w)
     return separator.join(words_result)

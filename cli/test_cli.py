@@ -114,14 +114,56 @@ def test_transform_invalid_case_type():
     assert result.exit_code == 2
     assert "Invalid value for '--to'" in result.output
 
-def test_cli_preservables(tmp_path):
+def test_cli_preserve(tmp_path):
     input_data = '{"SQLAlchemy": 1, "userID": 1, "default-http-router": 1, "Atomic_http_server": 1}'
     input_file = tmp_path / "input.json"
     input_file.write_text(input_data)
 
-    result = runner.invoke(app, ["transform", str(input_file), "--to", "kebab", "--preservables", "SQL,HTTP,ID"])
+    result = runner.invoke(app, ["transform", str(input_file), "--to", "kebab", "--preserve", "SQL,HTTP,ID"])
     assert result.exit_code == 0
     assert 'SQL-alchemy' in result.output
     assert 'user-ID' in result.output
     assert 'default-HTTP-router' in result.output
     assert 'atomic-HTTP-server' in result.output
+
+def test_cli_exclude(tmp_path):
+    input_data = '{"simpleKey": 1, "metaData": 1}'
+    input_file = tmp_path / "input.json"
+    input_file.write_text(input_data)
+
+    result = runner.invoke(app, ["transform", str(input_file), "--to", "kebab", "--exclude", "metaData,test"])
+    assert result.exit_code == 0
+    assert 'simple-key' in result.output
+    assert 'metaData' in result.output
+
+def test_cli_transform_nested_dict_with_recursion(tmp_path):
+    input_data = '{"simpleKey": 1, "metaData": {"nestedKey": 2, "anotherNested": 3}}'
+    input_file = tmp_path / "input.json"
+    input_file.write_text(input_data)
+
+    result = runner.invoke(app, ["transform", str(input_file), "--to", "kebab"])
+
+    assert result.exit_code == 0
+    # Nested keys should be converted
+    output_json = json.loads(result.output)
+    assert "simple-key" in output_json
+    assert "meta-data" in output_json
+    assert isinstance(output_json["meta-data"], dict)
+    assert "nested-key" in output_json["meta-data"]
+    assert "another-nested" in output_json["meta-data"]
+
+def test_cli_transform_nested_dict_exclude_keys_stops_recursion(tmp_path):
+    input_data = '{"simpleKey": 1, "metaData": {"nestedKey": 2, "anotherNested": 3}}'
+    input_file = tmp_path / "input.json"
+    input_file.write_text(input_data)
+
+    result = runner.invoke(app, ["transform", str(input_file), "--to", "kebab", "--exclude", "metaData"])
+
+    assert result.exit_code == 0
+    # metaData should not be converted and should stop recursion
+    output_json = json.loads(result.output)
+    assert "simple-key" in output_json
+    assert "metaData" in output_json
+    assert isinstance(output_json["metaData"], dict)
+    assert "nestedKey" in output_json["metaData"]
+    assert "anotherNested" in output_json["metaData"]
