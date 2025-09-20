@@ -167,3 +167,32 @@ def test_cli_transform_nested_dict_exclude_keys_stops_recursion(tmp_path):
     assert isinstance(output_json["metaData"], dict)
     assert "nestedKey" in output_json["metaData"]
     assert "anotherNested" in output_json["metaData"]
+
+def test_cli_transform_nested_dict_recursion_limit_0():
+    input_data = '{"levelOne": {"levelTwo": {"levelThree": "value"}}}'
+    result = runner.invoke(app, ["transform", "--json", input_data, "--to", "kebab"])
+
+    assert result.exit_code == 0
+    # No limit, all levels should be converted
+    output_json = json.loads(result.output)
+    assert output_json == {"level-one": {"level-two": {"level-three": "value"}}}
+
+def test_cli_transform_nested_dict_recursion_limit_1():
+    input_data = '{"levelOne": {"levelTwo": {"levelThree": "value"}}}'
+    result = runner.invoke(app, ["transform", "--json", input_data, "--to", "kebab", "--limit", "1"])
+
+    assert result.exit_code == 0
+    # Only levelOne should be converted
+    output_json = json.loads(result.output)
+    assert output_json == {"level-one": {"levelTwo": {"levelThree": "value"}}}
+
+def test_cli_transform_nested_dict_recursion_limit_2():
+    input_data = '{"levelOne": {"levelTwo": {"levelThree": "value"}}}'
+    result = runner.invoke(app, ["transform", "--json", input_data, "--to", "kebab", "--limit", "2"])
+
+    assert result.exit_code == 0
+    # Only levelOne and levelTwo should be converted
+    output_json = json.loads(result.output)
+    assert output_json == {"level-one": {"level-two": {"levelThree": "value"}}}
+
+

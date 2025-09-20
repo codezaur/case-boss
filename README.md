@@ -60,6 +60,11 @@ case-boss transform path-to/file.json --preserve ID,HTTP
 # rich example; passing path, selected target case type, name of result file and benchamark
 case-boss transform path-to/file.json --to pascal --output result.json --benchmark --preserve ID,SQL
 
+# limiting recursion depth (e.g., only transform top-level keys)
+case-boss transform path-to/file.json --limit 1
+
+# excluding specific keys from transformation (stopping recursion on those keys)
+case-boss transform path-to/file.json --exclude someKey,anotherKey
 
 case-boss transform --help  # show options and usage for the transform command
 ```
@@ -93,8 +98,16 @@ print(result)
 result = boss.transform(source=my_dict, case="camel", preserve_tokens=["ID", "HTTP"])
 print(result)
 
+# Limiting recursion depth (e.g., '1' only transform top-level keys):
+result = boss.transform(source=my_dict, case="camel", recursion_limit=1)
+print(result)
+
+# Excluding specific keys from transformation (stopping recursion on those keys):
+result = boss.transform(source=my_dict, case="camel", exclude_keys=["metaData", "anotherKey"])
+print(result)
+
 # For JSON strings:
-json_result = boss.transform_from_json(source=my_json_str, case="camel", preserve_tokens=["ID", "HTTP"])
+json_result = boss.transform_from_json(source=my_json_str, case="camel")
 print(json_result)
 ```
 
@@ -106,6 +119,14 @@ The `clone` argument (Python API only) determines whether the transformation mut
 #### About `preserve_tokens`
 
 The `--preserve` CLI option and `preserve_tokens` Python argument allow you to specify a comma-separated list (CLI) or list of strings (Python) of words/acronyms to preserve in their original or uppercase form during case conversion. This is useful for things like `ID`, `HTTP`, etc., so they remain as intended (e.g., `userID` instead of `userId`).
+
+#### About `recursion_limit`
+
+The `--limit` CLI option and `recursion_limit` Python argument set the maximum recursion depth for nested JSON key transformation. For example, setting it to 1 will only transform top-level keys. Defaults to 0 (unlimited recursion).
+
+#### About `exclude_keys`
+
+The `--exclude` CLI option and `exclude_keys` Python argument allow you to specify a comma-separated list (CLI) or list of strings (Python) of keys to skip entirely during transformation, including stopping recursion on those keys and their nested values.
 
 ## Supported Case Types
 

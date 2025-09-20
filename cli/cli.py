@@ -2,7 +2,7 @@ import sys
 import typer
 import time
 import json
-from cli.const import ERROR_FILE_NOT_FOUND, ERROR_INVALID_JSON, ERROR_MUTUALLY_EXCLUSIVE, ERROR_NO_INPUT, ERROR_OUTPUT_INPLACE, ERROR_VALUE, HELP_APP, HELP_BENCHMARK, HELP_EXCLUDE, HELP_INPLACE, HELP_JSON, HELP_OUTPUT, HELP_PRESERVE, HELP_SOURCE, HELP_TO, HELP_VERSION, INFO_BENCHMARK, INFO_NEW_FILE, INFO_UPDATED_INPLACE, WARN_FILE_NOT_JSON
+from cli.const import ERROR_FILE_NOT_FOUND, ERROR_INVALID_JSON, ERROR_MUTUALLY_EXCLUSIVE, ERROR_NO_INPUT, ERROR_OUTPUT_INPLACE, ERROR_VALUE, HELP_APP, HELP_BENCHMARK, HELP_EXCLUDE, HELP_INPLACE, HELP_JSON, HELP_LIMIT, HELP_OUTPUT, HELP_PRESERVE, HELP_SOURCE, HELP_TO, HELP_VERSION, INFO_BENCHMARK, INFO_NEW_FILE, INFO_UPDATED_INPLACE, WARN_FILE_NOT_JSON
 from core.case_boss import CaseBoss
 from core.const import CASE_DESCRIPTIONS
 from core.types import CaseType
@@ -79,7 +79,8 @@ def transform(
   inplace: bool = typer.Option(False, "--inplace", "-i", help=HELP_INPLACE),
   benchmark: bool = typer.Option(False, "--benchmark", "-b", help=HELP_BENCHMARK),
   preserve: str = typer.Option(None, "--preserve", help=HELP_PRESERVE),
-  exclude: str = typer.Option(None, "--exclude", help=HELP_EXCLUDE)
+  exclude: str = typer.Option(None, "--exclude", help=HELP_EXCLUDE),
+  limit: int = typer.Option(0, "--limit", help=HELP_LIMIT)
 ) -> None:
   """Transform JSON object keys to the given case type."""
 
@@ -96,7 +97,8 @@ def transform(
       source=data, 
       case=case, 
       preserve_tokens=preserve_tokens, 
-      exclude_keys=exclude_keys
+      exclude_keys=exclude_keys,
+      recursion_limit=limit,
       )
     elapsed = (time.perf_counter() - start) if benchmark else None
   except json.JSONDecodeError as er:

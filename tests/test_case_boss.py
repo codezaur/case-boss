@@ -89,6 +89,45 @@ def test_transform_nested_dict_exclude_keys_stops_recursion(boss):
     assert result == {"simple-key": 1, "metaData": {"nestedKey": 2, "anotherNested": 3}}
 
 
+def test_transform_nested_dict_recursion_limit_0(boss):
+    data = {
+        "levelOne": {
+            "levelTwo": {
+                "levelThree": "value"
+            }
+        }
+    }
+    result = boss.transform(source=data, case=CaseType.KEBAB)
+
+    # No recursion_limit, all levels should be converted
+    assert result == {"level-one": {"level-two": {"level-three": "value"}}}
+
+def test_transform_nested_dict_recursion_limit_1(boss):
+    data = {
+        "levelOne": {
+            "levelTwo": {
+                "levelThree": "value"
+            }
+        }
+    }
+    result = boss.transform(source=data, case=CaseType.KEBAB, recursion_limit=1)
+
+    # Only levelOne should be converted
+    assert result == {"level-one": {"levelTwo": {"levelThree": "value"}}}
+
+def test_transform_nested_dict_recursion_limit_2(boss):
+    data = {
+        "levelOne": {
+            "levelTwo": {
+                "levelThree": "value"
+            }
+        }
+    }
+    result = boss.transform(source=data, case=CaseType.KEBAB, recursion_limit=2)
+
+    # Only levelOne and levelTwo should be converted
+    assert result == {"level-one": {"level-two": {"levelThree": "value"}}}
+
 
 # JSON  
 
