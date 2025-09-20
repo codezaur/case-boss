@@ -1,18 +1,20 @@
 import re
 from core.abstract.case_converter import CaseConverter
+from core.utils import split_to_words
 
 
 
 class StartCaseConverter(CaseConverter):
     """Converts to Start Case, eg: 'Example Dict Key' """
 
-    @staticmethod
-    def _convert_key(key):
-        # Split camelCase and PascalCase boundaries
-        key = re.sub(r'([a-z0-9])([A-Z])', r'\1 \2', key)
-        # Replace underscores and hyphens with spaces
-        key = re.sub(r'[_\-]+', ' ', key)
-        # Collapse multiple spaces to a single space and strip
-        key = re.sub(r'\s+', ' ', key).strip()
-        # Capitalize each word
-        return ' '.join(word.capitalize() for word in key.split())
+    def _convert_key(self, key: str):
+        words = split_to_words(key=key)
+        words_result: list[str] = []
+        for word in words:
+            preserve = False
+            if self.preservables:
+                acronym = word.upper()
+                preserve = acronym in self.preservables 
+            w = acronym if preserve else word.capitalize()
+            words_result.append(w)
+        return " ".join(words_result)

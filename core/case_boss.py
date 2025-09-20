@@ -1,6 +1,6 @@
 import copy
 import json
-from typing import Any, Dict, Hashable
+from typing import Any, Dict, Hashable, List
 
 from core.const import CASE_TYPE_CONVERTER_MAPPING
 from core.errors import ERROR_UNKNOWN_CASE_TYPE, ERROR_INVALID_JSON
@@ -17,6 +17,7 @@ class CaseBoss:
         source: Dict[Hashable, Any],
         case: CaseType,
         clone: bool = False,
+        preservables: List[str] | None = None,
     ) -> Dict[Hashable, Any]:
         """
         Transforms input dict keys to specified case type.
@@ -26,7 +27,7 @@ class CaseBoss:
             source (dict): The data to process.
             type (CaseType): Target key case format (e.g., CaseType.SNAKE, CaseType.CAMEL)
             clone (bool): Will return clone, leaving original object untouched (defaults to False)
-            throwing exception (defaults to False)
+            preservables (List[str]): List of preservable strings, eg. acronyms like HTTP, ID
 
         Returns:
             dict: The same dict object as passed (unless clone arg is set to True),
@@ -42,22 +43,24 @@ class CaseBoss:
         if clone:
             source = copy.deepcopy(source)
 
-        converter: CaseConverter = CASE_TYPE_CONVERTER_MAPPING.get(case.value, None)
-        if not converter:
+        converter_cls: CaseConverter = CASE_TYPE_CONVERTER_MAPPING.get(case.value, None)
+        if not converter_cls:
             raise ValueError(ERROR_UNKNOWN_CASE_TYPE.format(type_=type(case).__name__, allowed=[t.value for t in CaseType]))
 
+        converter = converter_cls(preservables=preservables)
         converter.convert(source=source)
 
         return source
 
 
-    def transform_from_json(self, source: str, case: CaseType) -> str:
+    def transform_from_json(self, source: str, case: CaseType, preservables: List[str] | None = None) -> str:
         """
         Transforms input JSON keys to specified case-type, and returns the result as a JSON string.
 
         Args:
             source (str): The data to process.
             type (CaseType): Target key case format (e.g., CaseType.SNAKE, CaseType.CAMEL)
+            preservables (List[str]): List of preservable strings, eg. acronyms like HTTP, ID
 
         Returns:
             str: A JSON string with all string keys transformed to the specified case
@@ -74,4 +77,4 @@ class CaseBoss:
         except json.JSONDecodeError as e:
             raise json.JSONDecodeError(ERROR_INVALID_JSON.format(msg=e.msg), e.doc, e.pos) from e
 
-        return  json.dumps(self.transform(source=data, case=case))
+        return  json.dumps(self.transform(source=data, case=case, preservables=preservables))

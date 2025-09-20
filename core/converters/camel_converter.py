@@ -1,18 +1,22 @@
 import re
 from core.abstract.case_converter import CaseConverter
+from core.utils import split_to_words
 
 
 
 class CamelCaseConverter(CaseConverter):
     """Converts to camelCase, eg: 'exampleDictKey' """
 
-    @staticmethod
-    def _convert_key(key):
-        # Split on underscores, hyphens, spaces, and camelCase boundaries
-        key = re.sub(r'([a-z0-9])([A-Z])', r'\1 \2', key)
-        key = re.sub(r'[_\- ]+', ' ', key)
-        words = key.split()
-        if not words:
-            return ''
-        # Lowercase first word, capitalize the rest
-        return words[0].lower() + ''.join(word.capitalize() for word in words[1:])
+    def _convert_key(self, key: str):
+        words = split_to_words(key=key)
+        words_result = ""
+
+        for i, word in enumerate(words):
+            preserve = False
+            if self.preservables:
+                acronym = word.upper()
+                preserve = acronym in self.preservables 
+            word = word.capitalize() if i > 0 else word.lower()
+            w = acronym if preserve else word
+            words_result += w
+        return words_result

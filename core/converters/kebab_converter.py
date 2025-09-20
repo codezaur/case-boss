@@ -1,14 +1,10 @@
-import re
-
 from core.abstract.case_converter import CaseConverter
+from core.utils import convert_key_with_separator
 
 
 class KebabCaseConverter(CaseConverter):
     """Converts to KebabCase, eg: 'example-dict-key' """
 
-    @staticmethod
-    def _convert_key(key: str) -> str:
-        key = re.sub(r"([a-z0-9])([A-Z])", r"\1-\2", key)
-        key = key.replace("_", "-")
-        key = key.replace(" ", "-")
-        return key.lower()
+    def _convert_key(self, key: str) -> str:
+        return convert_key_with_separator(key=key, preservables=self.preservables, separator="-")
+

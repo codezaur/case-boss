@@ -6,6 +6,8 @@ HELP_TO = "Target case type"
 HELP_OUTPUT = "Write output to a file (expects a filename)."
 HELP_INPLACE = "Modify the input file in place, instead of creating new one (cannot be used with --output or stdin)."
 HELP_BENCHMARK = "Report transformation time in seconds"
+HELP_PRESERVABLES = "List of preservable strings, (eg. acronyms like HTTP, ID) " \
+"to not be modified during conversion, comma separated"
 HELP_VERSION = "Show version and exit"
 
 ERROR_MUTUALLY_EXCLUSIVE = "Error: Cannot use both --json and source argument."

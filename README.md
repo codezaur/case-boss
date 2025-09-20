@@ -15,19 +15,22 @@ pip install case-boss
 
 ## Usage
 
-### CLI (Command Line Interface)
+### ⌨️ CLI (Command Line Interface)
 
 ```bash
+#  basic commands
+
 case-boss -v      # show version
 case-boss --help  # show options and usage
 case-boss cases   # show available target case types
+
+# minimal transform command example; passing only file path, will convert to snake_case and print to standard output (stdout)
+
+case-boss transform path-to/file.json
 ```
 
 ```bash
-# # # transforming JSON keys
-
-# minimal example; passing only file path, will convert to snake_case and print to standard output (stdout)
-case-boss transform path-to/file.json
+# options for transform command
 
 # passing path and selected target case type 
 case-boss transform path-to/file.json --to pascal
@@ -51,8 +54,11 @@ case-boss transform --json '{"youShallNotPass": "ok"}' --to pascal
 case-boss transform path-to/file.json --benchmark
 case-boss transform path-to/file.json -b
 
+# preserving acronyms or custom words (e.g., keep 'ID' or 'HTTP' uppercase):
+case-boss transform path-to/file.json --preservables ID,HTTP
+
 # rich example; passing path, selected target case type, name of result file and benchamark
-case-boss transform path-to/file.json --to pascal --output result.json --benchmark
+case-boss transform path-to/file.json --to pascal --output result.json --benchmark --preservables ID,SQL
 
 
 case-boss transform --help  # show options and usage for the transform command
@@ -67,15 +73,39 @@ case-boss transform --help  # show options and usage for the transform command
 >
 > You can only use one, either `--inplace` or `--output`
 
-### Python API
+
+### 🐍 Python API
 
 ```python
 from case-boss import CaseBoss
 
 boss = CaseBoss()
-result = boss.transform(source=my_dict, to="camel")
-print(result)  # Output: my_string
+
+ # Basic usage
+result = boss.transform(source=my_dict, case="camel")
+print(result)
+
+# Clone mode: return a new dict, leaving the original untouched
+result = boss.transform(source=my_dict, case="camel", clone=True)
+print(result)
+
+# Preserving acronyms or custom words (e.g., keep 'ID' or 'HTTP' uppercase):
+result = boss.transform(source=my_dict, case="camel", preservables=["ID", "HTTP"])
+print(result)
+
+# For JSON strings:
+json_result = boss.transform_from_json(source=my_json_str, case="camel", preservables=["ID", "HTTP"])
+print(json_result)
 ```
+
+
+#### About `clone`
+
+The `clone` argument (Python API only) determines whether the transformation mutates the original dictionary or returns a new, transformed copy. If `clone=True`, the original input is left unchanged and a new dict is returned. By default, `clone=False` and the input dict is modified in place.
+
+#### About `preservables`
+
+The `--preservables` CLI option and `preservables` Python argument allow you to specify a comma-separated list (CLI) or list of strings (Python) of words/acronyms to preserve in their original or uppercase form during case conversion. This is useful for things like `ID`, `HTTP`, etc., so they remain as intended (e.g., `userID` instead of `userId`).
 
 ## Supported Case Types
 
