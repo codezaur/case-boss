@@ -1,11 +1,16 @@
 from typing import Literal
-from core.errors import ERROR_NOT_DICT, ERROR_UNKNOWN_CASE_TYPE, ERROR_WRONG_TYPE_CASE_TYPE
-from core.types import CaseType
+
+from case_boss.errors import (
+    ERROR_NOT_DICT,
+    ERROR_UNKNOWN_CASE_TYPE,
+    ERROR_WRONG_TYPE_CASE_TYPE,
+)
+from case_boss.types import CaseType
 
 
 def validate_is_dict(source) -> None:
     if not isinstance(source, dict):
-      raise ValueError(ERROR_NOT_DICT.format(type_=type(source).__name__))
+        raise ValueError(ERROR_NOT_DICT.format(type_=type(source).__name__))
 
 
 def normalize_type(case: CaseType | str) -> CaseType:
@@ -30,8 +35,12 @@ def normalize_type(case: CaseType | str) -> CaseType:
         try:
             return CaseType(case)
         except ValueError:
-            raise ValueError(ERROR_UNKNOWN_CASE_TYPE.format(type_=type(case), allowed=[t.value for t in CaseType]))
-    raise TypeError(ERROR_WRONG_TYPE_CASE_TYPE.format(type_= type(case).__name__))
+            raise ValueError(
+                ERROR_UNKNOWN_CASE_TYPE.format(
+                    type_=type(case), allowed=[t.value for t in CaseType]
+                )
+            )
+    raise TypeError(ERROR_WRONG_TYPE_CASE_TYPE.format(type_=type(case).__name__))
 
 
 def split_to_words(key: str) -> list[str]:
@@ -63,11 +72,15 @@ def split_to_words(key: str) -> list[str]:
         words.append(current)
     return words
 
+
 def convert_key_with_separator(
-    key: str, 
-    preserve_tokens: set[str] = {},
-    separator: Literal["-", "_", " "] = "_"
-    ) -> str:
+    key: str,
+    preserve_tokens: set[str] | None = None,
+    separator: Literal["-", "_", " "] = "_",
+) -> str:
+
+    if preserve_tokens is None:
+        preserve_tokens = set()
 
     words = split_to_words(key=key)
     words_result: list[str] = []
@@ -75,7 +88,7 @@ def convert_key_with_separator(
         preserve = False
         if preserve_tokens:
             acronym = word.upper()
-            preserve = acronym in preserve_tokens 
+            preserve = acronym in preserve_tokens
         w = acronym if preserve else word.lower()
         words_result.append(w)
     return separator.join(words_result)

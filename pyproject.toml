@@ -2,8 +2,12 @@
 [project.scripts]
 case-boss = "cli.cli:app"
 
+[tool.setuptools]
+include-package-data = true
+
 [tool.setuptools.packages.find]
 where = ["."]
+exclude = ["tests*", "venv*", ".pytest_cache*", "dist*", "build*"]
 
 [build-system]
 requires = ["setuptools>=61.0", "wheel"]
@@ -12,14 +16,53 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "case-boss"
 version = "0.1.0"
-description = "Library converting Python dict or JSON keys to selected format"
+description = "Dict/JSON key case converter (to snake, camel, kebab, etc.) with CLI"
+keywords = [
+    "json", 
+    "case-conversion", 
+    "case-converter", 
+    "snake-case", 
+    "camel-case", 
+    "kebab-case", 
+    "pascal-case", 
+    "space-case", 
+    "start-case", 
+    "title-case", 
+    "cli", 
+    "python"
+]
 readme = "README.md"
 authors = [{name = "codezaur", email = "codezaur@gmail.com"}]
 license = {file = "LICENSE"}
 requires-python = ">=3.8"
-dependencies = ["typer"]
+dependencies = ["typer>=0.17.0"]
 classifiers = [
+    "Intended Audience :: Developers",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "License :: OSI Approved :: MIT License",
+    "Topic :: Software Development :: Libraries :: Python Modules",
     "Operating System :: OS Independent",
 ]
+
+[project.urls]
+Homepage = "https://github.com/codezaur/case-boss"
+Repository = "https://github.com/codezaur/case-boss"
+Issues = "https://github.com/codezaur/case-boss/issues"
+
+[project.optional-dependencies]
+dev = [
+    "black",
+    "isort",
+    "flake8",
+    "mypy",
+    "pytest",
+    "pre-commit",
+    "build>=1.2,<2",
+]
+

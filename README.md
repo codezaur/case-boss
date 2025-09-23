@@ -1,10 +1,14 @@
 # case-boss
 
+[![PyPI version](https://img.shields.io/pypi/v/case-boss.svg)](https://pypi.org/project/case-boss/)
+[![Python versions](https://img.shields.io/pypi/pyversions/case-boss.svg)](https://pypi.org/project/case-boss/)
+[![License](https://img.shields.io/github/license/codezaur/case-boss.svg)](https://github.com/codezaur/case-boss/blob/main/LICENSE)
+
 A Python package for string case conversion and manipulation, featuring a flexible CLI and extensible core.
 
 ## Features
 
-- Convert strings between camelCase, snake_case, kebab-case, PascalCase, and more
+- Convert dictionary/JSON keys between camelCase, snake_case, kebab-case, PascalCase, and more
 - Easy to use cli (command-line interface)
 
 ## Installation
@@ -17,9 +21,9 @@ pip install case-boss
 
 ### ⌨️ CLI (Command Line Interface)
 
-```bash
-#  basic commands
+#### basic commands
 
+```bash
 case-boss -v      # show version
 case-boss --help  # show options and usage
 case-boss cases   # show available target case types
@@ -29,43 +33,64 @@ case-boss cases   # show available target case types
 case-boss transform path-to/file.json
 ```
 
+#### options for transform command
 ```bash
-# options for transform command
-
 # passing path and selected target case type 
 case-boss transform path-to/file.json --to pascal
+```
 
+```bash
 # passing path and name of result file (will save to file instead of stdout)
 case-boss transform path-to/file.json -o result.json
 case-boss transform path-to/file.json --output result.json
 case-boss transform path-to/file.json > result.json
+```
 
+```bash
 # modifying file inplace instead of creating new one or printing to stdout
 case-boss transform path-to/file.json --inplace
 case-boss transform path-to/file.json -i
+```
 
-# using standart input (stdin), passing '-' as the source and piping JSON data.
+```bash
+# using standard input (stdin), passing '-' as the source and piping JSON data.
 echo '{"youShallNotPass": "ok"}' | case-boss transform - --to pascal
+# output: {"YouShallNotPass": "ok"}
+```
 
-# passing --json directly instad of path to file
+```bash
+# passing --json directly instead of path to file
 case-boss transform --json '{"youShallNotPass": "ok"}' --to pascal
+```
 
+```bash
 # printing transformation time in seconds
 case-boss transform path-to/file.json --benchmark
 case-boss transform path-to/file.json -b
+```
 
+```bash
 # preserving acronyms or custom words (e.g., keep 'ID' or 'HTTP' uppercase):
 case-boss transform path-to/file.json --preserve ID,HTTP
+```
 
-# rich example; passing path, selected target case type, name of result file and benchamark
-case-boss transform path-to/file.json --to pascal --output result.json --benchmark --preserve ID,SQL
-
+```bash
 # limiting recursion depth (e.g., only transform top-level keys)
 case-boss transform path-to/file.json --limit 1
+```
 
+```bash
 # excluding specific keys from transformation (stopping recursion on those keys)
 case-boss transform path-to/file.json --exclude someKey,anotherKey
+```
 
+```bash
+# rich example; passing path, selected target case type, name of result file and benchmark
+case-boss transform path-to/file.json --to pascal --output result.json --benchmark --preserve ID,SQL
+```
+
+```bash
+# help
 case-boss transform --help  # show options and usage for the transform command
 ```
 
@@ -82,33 +107,41 @@ case-boss transform --help  # show options and usage for the transform command
 ### 🐍 Python API
 
 ```python
-from case-boss import CaseBoss
+from case_boss import CaseBoss
 
 boss = CaseBoss()
+```
 
- # Basic usage
+```python
+# Basic usage
 result = boss.transform(source=my_dict, case="camel")
-print(result)
+# assuming my_dict = { "you_shall_not_pass": True }, result will be: { "youShallNotPass": True }
+```
 
+```python
 # Clone mode: return a new dict, leaving the original untouched
 result = boss.transform(source=my_dict, case="camel", clone=True)
-print(result)
+```
 
+```python
 # Preserving acronyms or custom words (e.g., keep 'ID' or 'HTTP' uppercase):
 result = boss.transform(source=my_dict, case="camel", preserve_tokens=["ID", "HTTP"])
-print(result)
+# assuming my_dict = { "user_ID": 1, "http_status": "ok" }, result will be: { "userID": 1, "HTTPStatus": "ok" }
+```
 
+```python
 # Limiting recursion depth (e.g., '1' only transform top-level keys):
 result = boss.transform(source=my_dict, case="camel", recursion_limit=1)
-print(result)
+```
 
+```python
 # Excluding specific keys from transformation (stopping recursion on those keys):
 result = boss.transform(source=my_dict, case="camel", exclude_keys=["metaData", "anotherKey"])
-print(result)
+```
 
-# For JSON strings:
+```python
+# For JSON strings (also returns JSON):
 json_result = boss.transform_from_json(source=my_json_str, case="camel")
-print(json_result)
 ```
 
 
@@ -126,7 +159,7 @@ The `--limit` CLI option and `recursion_limit` Python argument set the maximum r
 
 #### About `exclude_keys`
 
-The `--exclude` CLI option and `exclude_keys` Python argument allow you to specify a comma-separated list (CLI) or list of strings (Python) of keys to skip entirely during transformation, including stopping recursion on those keys and their nested values.
+The `--exclude` CLI option (comma-separated list) and `exclude_keys` Python argument (list of strings) let you specify keys to skip entirely during transformation, halting recursion on those keys and their nested values.
 
 ## Supported Case Types
 
@@ -145,7 +178,7 @@ The following case types are supported:
 ## Contributing
 
 1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/YourFeature`)
+2. Create your feature branch (`git checkout -b feature/your-feature`)
 3. Commit your changes
 4. Push to the branch
 5. Open a pull request

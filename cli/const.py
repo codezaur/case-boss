@@ -12,8 +12,10 @@ HELP_PRESERVE = (
     "leaving 'SQL' unchanged."
 )
 HELP_EXCLUDE = "Comma-separated list of keys to skip entirely (stopping recursion)."
-HELP_LIMIT = ("Set the maximum recursion depth for nested JSON key transformation. "
-    "For example, setting to 1 will only transform top level keys. Defaults to 0 (unlimited).")
+HELP_LIMIT = (
+    "Set the maximum recursion depth for nested JSON key transformation. "
+    "For example, setting to 1 will only transform top level keys. Defaults to 0 (unlimited)."
+)
 HELP_VERSION = "Show version and exit"
 
 ERROR_MUTUALLY_EXCLUSIVE = "Error: Cannot use both --json and source argument."
@@ -23,7 +25,9 @@ ERROR_INVALID_JSON = "Error: Invalid JSON - {msg}"
 ERROR_OUTPUT_INPLACE = "Error: --output and --inplace cannot be used together"
 ERROR_VALUE = "Error: {msg}"
 
-WARN_FILE_NOT_JSON = "Warning: Input file does not have a .json extension. Ensure content is valid JSON."
+WARN_FILE_NOT_JSON = (
+    "Warning: Input file does not have a .json extension. Ensure content is valid JSON."
+)
 
 INFO_NEW_FILE = "Info: created new file '{file}'"
 INFO_UPDATED_INPLACE = "Info: modified file: '{file}' in place"

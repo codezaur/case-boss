@@ -1,11 +1,9 @@
-import re
-from core.abstract.case_converter import CaseConverter
-from core.utils import split_to_words
-
+from case_boss.abstract.case_converter import CaseConverter
+from case_boss.utils import split_to_words
 
 
 class CamelCaseConverter(CaseConverter):
-    """Converts to camelCase, eg: 'exampleDictKey' """
+    """Converts to camelCase, eg: 'exampleDictKey'"""
 
     def _convert_key(self, key: str):
         words = split_to_words(key=key)
@@ -15,7 +13,7 @@ class CamelCaseConverter(CaseConverter):
             preserve = False
             if self._preserve_tokens:
                 acronym = word.upper()
-                preserve = acronym in self._preserve_tokens 
+                preserve = acronym in self._preserve_tokens
             word = word.capitalize() if i > 0 else word.lower()
             w = acronym if preserve else word
             words_result += w
