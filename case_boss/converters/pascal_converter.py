@@ -1,11 +1,9 @@
-import re
-from core.abstract.case_converter import CaseConverter
-from core.utils import split_to_words
-
+from case_boss.abstract.case_converter import CaseConverter
+from case_boss.utils import split_to_words
 
 
 class PascalCaseConverter(CaseConverter):
-    """Converts to PascalCase, eg: 'ExampleDictKey' """
+    """Converts to PascalCase, eg: 'ExampleDictKey'"""
 
     def _convert_key(self, key: str) -> str:
         words = split_to_words(key=key)

@@ -1,18 +1,23 @@
 import pytest
-from core.converters.kebab_converter import KebabCaseConverter
+
+from case_boss.converters.kebab_converter import KebabCaseConverter
 
 
 @pytest.fixture
 def converter():
     return KebabCaseConverter()
 
-@pytest.mark.parametrize("input_str,expected", [
-    ("exampleDictKey", "example-dict-key"),
-    ("Example_Dict_Key", "example-dict-key"),
-    ("example-dict-key", "example-dict-key"),
-    ("example dict key", "example-dict-key"),
-    ("", ""),
-])
+
+@pytest.mark.parametrize(
+    "input_str,expected",
+    [
+        ("exampleDictKey", "example-dict-key"),
+        ("Example_Dict_Key", "example-dict-key"),
+        ("example-dict-key", "example-dict-key"),
+        ("example dict key", "example-dict-key"),
+        ("", ""),
+    ],
+)
 def test_kebab_case_converter(input_str, expected, converter):
     assert converter._convert_key(input_str) == expected
 
@@ -52,20 +57,20 @@ def test_value_none(converter):
     converter.convert(source=data)
     assert data == {"normal-item": 1, "none-item": None}
 
+
 def test_preserve_tokens():
     data = {
-        "SQLAlchemy": 1,  
+        "SQLAlchemy": 1,
         "userID": 1,
-        "default-http-router": 1, 
-        "Atomic_http_server": 1
-        }
+        "default-http-router": 1,
+        "Atomic_http_server": 1,
+    }
     preserve_tokens = ["SQL", "HTTP", "ID"]
     converter = KebabCaseConverter(preserve_tokens=preserve_tokens)
     converter.convert(source=data)
     assert data == {
-        "SQL-alchemy": 1, 
+        "SQL-alchemy": 1,
         "user-ID": 1,
-        "default-HTTP-router": 1, 
-        "atomic-HTTP-server": 1
-        }
-
+        "default-HTTP-router": 1,
+        "atomic-HTTP-server": 1,
+    }
