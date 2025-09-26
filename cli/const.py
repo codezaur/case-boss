@@ -18,6 +18,9 @@ HELP_LIMIT = (
 )
 HELP_VERSION = "Show version and exit"
 
+ERROR_TYPER_NOT_FOUND = (
+    "The CLI requires 'typer'. Install with 'pip install case-boss[cli]'."
+)
 ERROR_MUTUALLY_EXCLUSIVE = "Error: Cannot use both --json and source argument."
 ERROR_NO_INPUT = "Error: Provide either a source (file/-) or --json."
 ERROR_FILE_NOT_FOUND = "Error: File '{source}' not found"
