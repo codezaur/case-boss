@@ -1,13 +1,9 @@
-
-[project.scripts]
-case-boss = "cli.cli:app"
-
 [tool.setuptools]
 include-package-data = true
 
 [tool.setuptools.packages.find]
 where = ["."]
-exclude = ["tests*", "venv*", ".pytest_cache*", "dist*", "build*"]
+exclude = ["tests*", "venv*", ".pytest_cache*", "dist*", "build*", "cli*"]
 
 [build-system]
 requires = ["setuptools>=61.0", "wheel"]
@@ -32,10 +28,9 @@ keywords = [
     "python"
 ]
 readme = "README.md"
-authors = [{name = "codezaur", email = "codezaur@gmail.com"}]
+authors = [{name = "codezaur"}]
 license = {file = "LICENSE"}
 requires-python = ">=3.8"
-dependencies = ["typer>=0.17.0"]
 classifiers = [
     "Intended Audience :: Developers",
     "Programming Language :: Python :: 3",
@@ -50,12 +45,16 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 
+[project.scripts]
+case-boss = "case_boss.cli:main"
+
 [project.urls]
 Homepage = "https://github.com/codezaur/case-boss"
 Repository = "https://github.com/codezaur/case-boss"
 Issues = "https://github.com/codezaur/case-boss/issues"
 
 [project.optional-dependencies]
+cli = ["typer>=0.17.0"]
 dev = [
     "black",
     "isort",
@@ -65,4 +64,3 @@ dev = [
     "pre-commit",
     "build>=1.2,<2",
 ]
-

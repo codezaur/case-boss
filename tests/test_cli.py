@@ -1,13 +1,9 @@
-import io
 import json
-import sys
 
-import pytest
 from typer.testing import CliRunner
 
-from cli.const import ERROR_NO_INPUT, ERROR_OUTPUT_INPLACE, WARN_FILE_NOT_JSON
-
-from .cli import app
+from case_boss.cli import app
+from case_boss.const import CLI
 
 runner = CliRunner()
 
@@ -83,7 +79,7 @@ def test_transform_with_file_input_txt(tmp_path):
     in_file = tmp_path / "in.txt"
     in_file.write_text('{"simple_key": 1, "another_key": 2}')
     result = runner.invoke(app, ["transform", str(in_file), "--to", "camel"])
-    assert WARN_FILE_NOT_JSON in result.output
+    assert CLI.Warn.WARN_FILE_NOT_JSON in result.output
     assert result.exit_code == 0
     assert '"simpleKey": 1' in result.output
 
@@ -116,13 +112,13 @@ def test_transform_output_inplace_error(tmp_path):
         app, ["transform", str(in_file), "--output", "result.json", "--inplace"]
     )
     assert result.exit_code == 1
-    assert ERROR_OUTPUT_INPLACE.strip() == result.output.strip()
+    assert CLI.Error.ERROR_OUTPUT_INPLACE.strip() == result.output.strip()
 
 
 def test_transform_missing_input_error():
     result = runner.invoke(app, ["transform"])
     assert result.exit_code == 1
-    assert ERROR_NO_INPUT.strip() == result.output.strip()
+    assert CLI.Error.ERROR_NO_INPUT.strip() == result.output.strip()
 
 
 def test_transform_invalid_json():
