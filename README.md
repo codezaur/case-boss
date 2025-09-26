@@ -2,19 +2,24 @@
 
 [![PyPI version](https://img.shields.io/pypi/v/case-boss.svg)](https://pypi.org/project/case-boss/)
 [![Python versions](https://img.shields.io/pypi/pyversions/case-boss.svg)](https://pypi.org/project/case-boss/)
-[![License](https://img.shields.io/github/license/codezaur/case-boss.svg)](https://github.com/codezaur/case-boss/blob/main/LICENSE)
+[![License](https://img.shields.io/github/license/codezaur/case-boss.svg)](https://github.com/codezaur/case-boss/blob/master/LICENSE)
 
 A Python package for string case conversion and manipulation, featuring a flexible CLI and extensible core.
 
 ## Features
 
 - Convert dictionary/JSON keys between camelCase, snake_case, kebab-case, PascalCase, and more
-- Easy to use cli (command-line interface)
+- Easy to use optional cli (command-line interface)
 
 ## Installation
 
+for core Python library
 ```bash
 pip install case-boss
+```
+library + CLI (requires typer>=0.17.0)
+```bash
+pip install case-boss[cli]
 ```
 
 ## Usage

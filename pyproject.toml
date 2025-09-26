@@ -1,7 +1,3 @@
-
-[project.scripts]
-case-boss = "cli.cli:app"
-
 [tool.setuptools]
 include-package-data = true
 
@@ -32,10 +28,9 @@ keywords = [
     "python"
 ]
 readme = "README.md"
-authors = [{name = "codezaur", email = "codezaur@gmail.com"}]
+authors = [{name = "codezaur"}]
 license = {file = "LICENSE"}
 requires-python = ">=3.8"
-dependencies = ["typer>=0.17.0"]
 classifiers = [
     "Intended Audience :: Developers",
     "Programming Language :: Python :: 3",
@@ -50,12 +45,17 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 
+[project.scripts]
+case-boss = "cli.cli:app"
+
 [project.urls]
 Homepage = "https://github.com/codezaur/case-boss"
 Repository = "https://github.com/codezaur/case-boss"
 Issues = "https://github.com/codezaur/case-boss/issues"
 
+dependencies = []
 [project.optional-dependencies]
+cli = ["typer>=0.17.0"]
 dev = [
     "black",
     "isort",
@@ -65,4 +65,3 @@ dev = [
     "pre-commit",
     "build>=1.2,<2",
 ]
-

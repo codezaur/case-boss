@@ -3,8 +3,6 @@ import json
 import sys
 import time
 
-import typer
-
 from case_boss.case_boss import CaseBoss
 from case_boss.const import CASE_DESCRIPTIONS
 from case_boss.types import CaseType
@@ -14,6 +12,7 @@ from cli.const import (
     ERROR_MUTUALLY_EXCLUSIVE,
     ERROR_NO_INPUT,
     ERROR_OUTPUT_INPLACE,
+    ERROR_TYPER_NOT_FOUND,
     ERROR_VALUE,
     HELP_APP,
     HELP_BENCHMARK,
@@ -32,13 +31,28 @@ from cli.const import (
     WARN_FILE_NOT_JSON,
 )
 
-app = typer.Typer(help=HELP_APP)
+try:
+    import typer
+except ImportError:
 
+    def main():
+        raise ImportError(ERROR_TYPER_NOT_FOUND)
 
-def _version(value: bool) -> None:
-    if value:
-        typer.echo(f"case-boss version: {im.version('case-boss')}")
-        raise typer.Exit()
+else:
+    app = typer.Typer(help=HELP_APP)
+
+    def _version(value: bool) -> None:
+        if value:
+            typer.echo(f"case-boss version: {im.version('case-boss')}")
+            raise typer.Exit()
+
+    @app.callback()
+    def main(
+        version: bool = typer.Option(
+            None, "--version", "-v", help=HELP_VERSION, callback=_version, is_eager=True
+        )
+    ) -> None:
+        pass
 
 
 def _validate_args(
@@ -72,15 +86,6 @@ def _get_input_json(source: str | None, json_input: str | None) -> str:
         except FileNotFoundError:
             typer.echo(ERROR_FILE_NOT_FOUND.format(source=source), err=True)
             raise typer.Exit(code=1)
-
-
-@app.callback()
-def main(
-    version: bool = typer.Option(
-        None, "--version", "-v", help=HELP_VERSION, callback=_version, is_eager=True
-    )
-) -> None:
-    pass
 
 
 @app.command()
